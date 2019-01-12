@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="google,protocol-buffers,">
 
 
 
@@ -94,13 +94,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="YouShouldKnow">
-<meta property="og:url" content="http://blog.youshouldknow.tech/index.html">
+<meta name="description" content="本教程旨在让我们学会：  定义一个.proto文件 使用 protocol buffer complier 用户 Java protocol buffer API 来读写信息  首先我们结合实际的应用场景来了解一下，为什么需要protocol buffers?这里我们是用一个通讯录对文件的读写来完成对用户通讯信息的读写的例子作为介绍。 当我们要序列化和以及恢复这种有结构的数据，有如下几种方法。">
+<meta name="keywords" content="google,protocol-buffers">
+<meta property="og:type" content="article">
+<meta property="og:title" content="protocol buffers">
+<meta property="og:url" content="http://blog.youshouldknow.tech/2019/01/13/protocol-buffers/index.html">
 <meta property="og:site_name" content="YouShouldKnow">
+<meta property="og:description" content="本教程旨在让我们学会：  定义一个.proto文件 使用 protocol buffer complier 用户 Java protocol buffer API 来读写信息  首先我们结合实际的应用场景来了解一下，为什么需要protocol buffers?这里我们是用一个通讯录对文件的读写来完成对用户通讯信息的读写的例子作为介绍。 当我们要序列化和以及恢复这种有结构的数据，有如下几种方法。">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-01-12T20:00:47.856Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="YouShouldKnow">
+<meta name="twitter:title" content="protocol buffers">
+<meta name="twitter:description" content="本教程旨在让我们学会：  定义一个.proto文件 使用 protocol buffer complier 用户 Java protocol buffer API 来读写信息  首先我们结合实际的应用场景来了解一下，为什么需要protocol buffers?这里我们是用一个通讯录对文件的读写来完成对用户通讯信息的读写的例子作为介绍。 当我们要序列化和以及恢复这种有结构的数据，有如下几种方法。">
 
 
 
@@ -129,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="http://blog.youshouldknow.tech/">
+  <link rel="canonical" href="http://blog.youshouldknow.tech/2019/01/13/protocol-buffers/">
 
 
 
 
 
-  <title>YouShouldKnow</title>
+  <title>protocol buffers | YouShouldKnow</title>
   
 
 
@@ -160,9 +165,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -265,9 +268,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -297,9 +300,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/13/protocol-buffers/" itemprop="url">protocol buffers</a></h1>
+          <h1 class="post-title" itemprop="name headline">protocol buffers</h1>
         
 
         <div class="post-meta">
@@ -371,9 +372,7 @@
       
 
       
-        
-          
-            <p>本教程旨在让我们学会：</p>
+        <p>本教程旨在让我们学会：</p>
 <ol>
 <li>定义一个.proto文件</li>
 <li>使用 protocol buffer complier</li>
@@ -497,8 +496,6 @@
 <h4 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h4><p>本质上就是提供了一个中间层，完成数据的定义和数据在具体代码中实现（提供的API：getset，序列化，解码编码，builder-merge等）的解耦。</p>
 <h4 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h4><p><a href="https://developers.google.com/protocol-buffers/docs/javatutorial" target="_blank" rel="noopener">protocol buffers java tutorial</a></p>
 
-          
-        
       
     </div>
     
@@ -513,155 +510,38 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.youshouldknow.tech/2019/01/13/some-exprience-about-hexo-first-use-it/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Frank Zhang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/zy_avatar.jepg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="YouShouldKnow">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/13/some-exprience-about-hexo-first-use-it/" itemprop="url">hexo</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-13T02:23:02+08:00">
-                2019-01-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/tools/" itemprop="url" rel="index">
-                    <span itemprop="name">tools</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/google/" rel="tag"># google</a>
           
-
+            <a href="/tags/protocol-buffers/" rel="tag"># protocol-buffers</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
       
-        
-          
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-          
-        
-      
-    </div>
-    
-    
-    
+              <a href="/2019/01/13/some-exprience-about-hexo-first-use-it/" rel="next" title="hexo">
+                <i class="fa fa-chevron-left"></i> hexo
+              </a>
+            
+          </div>
 
-    
+          <span class="post-nav-divider"></span>
 
-    
-
-    
-
-    <footer class="post-footer">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -671,10 +551,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -682,6 +563,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -702,8 +587,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image" src="/images/zy_avatar.jepg" alt="Frank Zhang">
           <p class="site-author-name" itemprop="name">Frank Zhang</p>
@@ -787,6 +681,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#首先我们结合实际的应用场景来了解一下，为什么需要protocol-buffers"><span class="nav-number">1.</span> <span class="nav-text">首先我们结合实际的应用场景来了解一下，为什么需要protocol buffers?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下面介绍具体的使用："><span class="nav-number">2.</span> <span class="nav-text">下面介绍具体的使用：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Summary"><span class="nav-number">3.</span> <span class="nav-text">Summary</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reference"><span class="nav-number">4.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -907,10 +817,10 @@
 
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
