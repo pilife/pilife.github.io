@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.youshouldknow.tech/"/>
-  <updated>2019-02-19T05:47:21.393Z</updated>
+  <updated>2019-03-15T13:47:40.465Z</updated>
   <id>http://blog.youshouldknow.tech/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>不懂这些，计算机网络你可能一无所知?</title>
+    <link href="http://blog.youshouldknow.tech/2019/03/15/%E4%B8%8D%E6%87%82%E8%BF%99%E4%BA%9B%EF%BC%8C%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%A0%E5%8F%AF%E8%83%BD%E4%B8%80%E6%97%A0%E6%89%80%E7%9F%A5/"/>
+    <id>http://blog.youshouldknow.tech/2019/03/15/不懂这些，计算机网络你可能一无所知/</id>
+    <published>2019-03-15T13:45:17.000Z</published>
+    <updated>2019-03-15T13:47:40.465Z</updated>
+    
+    <content type="html"><![CDATA[<ul><li><p>网络分层</p><p>| Layer       | Protocol                |<br>| ———– | ———————– |<br>| Application | Telnet, FTP, etc        |<br>| Transport   | TCP, UDP                |<br>| Network     | IP, ICMP                |<br>| Link        | drivers, interface card |</p></li><li><p>数据的单元：报文，报文段，分组/包，数据报，帧，数据单元</p><ul><li>Application Layer -&gt; 报文（message）</li><li>Transport Layer -&gt; TCP -&gt; 报文段（segment）</li><li>Transport/Network Layer -&gt; UDP/ IP -&gt; 数据报（datagram）</li><li>Transport/Network Layer -&gt; 分组/包（packet）</li><li>Link Layer -&gt; 帧（frame）</li></ul></li><li><p>TCP</p><ol><li><p>TCP Segment</p><p><img src="https://ws3.sinaimg.cn/large/006tKfTcgy1g13ip2xmihj30kp072jrj.jpg" alt="img"></p><p>以太网数据包（frame）的大小是固定的，最初是1518字节，后来增加到1522字节。其中， 1500 字节是负载（payload），22字节是头信息（head）。</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1g13j80o5d6g30bm06qmwy.gif" alt="ip packet"></p><p>IP 数据包在以太网数据包的负载里面，它也有自己的头信息，最少需要20字节，所以 IP 数据包的负载最多为1480字节。</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g13j7708d2g30b708i3yb.gif" alt="tcp packet"></p><p>TCP 数据包在 IP 数据包的负载里面。它的头信息最少也需要20字节，因此 TCP 数据包的最大负载是 1480 - 20 = 1460 字节。由于 IP 和 TCP 协议往往有额外的头信息，所以 TCP 负载实际为1400字节左右。</p><p>因此，一条1500字节的信息需要两个 TCP 数据包。HTTP/2 协议的一大改进， 就是压缩 HTTP 协议的头信息，使得一个 HTTP 请求可以放在一个 TCP 数据包里面，而不是分成多个，这样就提高了速度。</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g13ivy3aetj30ix08j3yf.jpg" alt="img"></p></li><li><p>流程</p><ol><li>建立连接：三次握手</li><li>发送数据<ol><li>滑动窗口</li><li>慢启动</li></ol></li><li>断开连接：四次挥手</li></ol></li><li><p>优点</p><ul><li>面向连接</li><li>具备顺序控制</li><li>重发控制等机制</li></ul></li><li><p>应用场景</p><p>可以为应用提供可靠的传输。</p></li></ol></li><li><p>UDP</p><ol><li><p>UDP packet</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1g13jpm4luog30aa03a3y9.gif" alt="img"></p></li><li><p>流程</p></li><li><p>优点</p><blockquote><p>UDP数据包长度</p><p>在本机(loopback)传输，可以根据需要设置MTU，但记住，UDP最大理论长度65507。</p><p>在内网传输，最好控制在1472字节(1500-8-20)。</p><p>在internet上传输，最好控制在548字节(576-8-20)以内。</p></blockquote><blockquote><p> UDP收包能力</p><p>UDP处理能力非常可观，在日常的业务情形中，UDP一般不会成为性能瓶颈。</p><p>随着进程个数的增加，处理能力未明显上升，但是丢包个数明显下降。</p><p>采用多进程监听不同端口的模型，而不是多进程或多线程监听同一个端口。</p></blockquote></li><li><p>应用场景</p><p>media streaming </p></li></ol></li><li><p>IP分片与重组</p></li></ul><p>Reference:</p><blockquote><p><a href="https://stackoverflow.com/questions/11636405/definition-of-network-units-fragment-segment-packet-frame-datagram" target="_blank" rel="noopener">Exploring the anatomy of a data packet</a></p><p><a href="https://www.techrepublic.com/article/exploring-the-anatomy-of-a-data-packet/" target="_blank" rel="noopener">Definition of Network Units: Fragment, Segment, Packet, Frame, Datagram</a></p><p><a href="https://blog.csdn.net/github_35124642/article/details/52006185" target="_blank" rel="noopener">IP分片和重组</a></p><p>[浅谈UDP(数据包长度，收包能力，丢包及进程结构选择)](</p></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;ul&gt;
+&lt;li&gt;&lt;p&gt;网络分层&lt;/p&gt;
+&lt;p&gt;| Layer       | Protocol                |&lt;br&gt;| ———– | ———————– |&lt;br&gt;| Application | Telnet, FTP, etc        |&lt;br&gt;| T
+      
+    
+    </summary>
+    
+      <category term="youshouldknow" scheme="http://blog.youshouldknow.tech/categories/youshouldknow/"/>
+    
+    
+      <category term="tcp" scheme="http://blog.youshouldknow.tech/tags/tcp/"/>
+    
+      <category term="udp" scheme="http://blog.youshouldknow.tech/tags/udp/"/>
+    
+      <category term="ip" scheme="http://blog.youshouldknow.tech/tags/ip/"/>
+    
+  </entry>
   
   <entry>
     <title>吉他练习心得（从新手成长进阶的过程和总结）</title>
@@ -39,16 +70,16 @@
     <link href="http://blog.youshouldknow.tech/2019/02/19/%E4%B9%90%E7%90%86%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86%EF%BC%88%E6%8C%81%E7%BB%AD%E5%AD%A6%E4%B9%A0%E4%B8%AD%EF%BC%89/"/>
     <id>http://blog.youshouldknow.tech/2019/02/19/乐理知识整理（持续学习中）/</id>
     <published>2019-02-19T05:44:24.000Z</published>
-    <updated>2019-03-01T15:22:14.202Z</updated>
+    <updated>2019-03-01T16:19:16.401Z</updated>
     
-    <content type="html"><![CDATA[<p>[TOC]</p><h2 id="1-大白话音乐的基本概念"><a href="#1-大白话音乐的基本概念" class="headerlink" title="1. 大白话音乐的基本概念"></a>1. 大白话音乐的基本概念</h2><h3 id="声音的物理原理"><a href="#声音的物理原理" class="headerlink" title="声音的物理原理"></a>声音的物理原理</h3><p>声音是一种波，所以由<u>振幅，频率，相位</u></p><p><em>振幅</em>就是通常所说的<strong>音量(volume)</strong></p><p><em>频率</em>则是<strong>音高(pitch)</strong></p><p>波的叠加产生了不同的<strong>音色(timbre)</strong>，这里也涉及到了不同<em>相位波的叠加</em></p><h3 id="音乐的三要素"><a href="#音乐的三要素" class="headerlink" title="音乐的三要素"></a>音乐的三要素</h3><p>节奏，旋律，和声</p><p>节奏是音乐的生命</p><p>旋律是音乐的感情走向</p><p>和声是使音乐表现力更加丰富</p><h3 id="音高的划分—12平均律"><a href="#音高的划分—12平均律" class="headerlink" title="音高的划分—12平均律"></a>音高的划分—12平均律</h3><h3 id="音名，唱名"><a href="#音名，唱名" class="headerlink" title="音名，唱名"></a>音名，唱名</h3><h3 id="为什么划分这些唱名？"><a href="#为什么划分这些唱名？" class="headerlink" title="为什么划分这些唱名？"></a>为什么划分这些唱名？</h3><h3 id="和弦"><a href="#和弦" class="headerlink" title="和弦"></a>和弦</h3><h3 id="常用和弦进行"><a href="#常用和弦进行" class="headerlink" title="常用和弦进行"></a>常用和弦进行</h3><h3 id="什么是调？C调，D调，XX调到底是啥"><a href="#什么是调？C调，D调，XX调到底是啥" class="headerlink" title="什么是调？C调，D调，XX调到底是啥"></a>什么是调？C调，D调，XX调到底是啥</h3><h2 id="2-识谱，不要做文盲！"><a href="#2-识谱，不要做文盲！" class="headerlink" title="2. 识谱，不要做文盲！"></a>2. 识谱，不要做文盲！</h2><h3 id="五线谱：音乐的语言"><a href="#五线谱：音乐的语言" class="headerlink" title="五线谱：音乐的语言"></a>五线谱：音乐的语言</h3><h3 id="六线谱：万一按错了呢，还是要这个纠正下"><a href="#六线谱：万一按错了呢，还是要这个纠正下" class="headerlink" title="六线谱：万一按错了呢，还是要这个纠正下"></a>六线谱：万一按错了呢，还是要这个纠正下</h3><h2 id="3-练琴心得"><a href="#3-练琴心得" class="headerlink" title="3. 练琴心得"></a>3. 练琴心得</h2><h3 id="关于爬格子"><a href="#关于爬格子" class="headerlink" title="关于爬格子"></a>关于爬格子</h3><p>必要性：顶尖的大师，每天也都会爬格子，何况吾等。能够让你的手指灵活，有力，独立。</p><p>推荐爬格子方法：从60开始，声音饱满节奏稳定以后提速5，正常爬格子速度一般练到100+ ，保留指爬格子一般练到80速左右。 节拍使用四四拍，四分音符，每个音符弹两下。</p><p>爬格子注意：一定要集中注意力爬格子！！一定要集中注意力爬格子！！一定要集中注意力爬格子！！不要以为这是机械的动作就不要注意力了，集中注意，打开手指，努力张开到最大，按的最接近品柱。不然爬格子并不会带来上述收益。</p><p>对了，很努力的爬格子之后，再按和弦会感觉手指很灵活，很轻松。和健身做完大重量做小重量类似的感觉。</p><h3 id="关于单音练习"><a href="#关于单音练习" class="headerlink" title="关于单音练习"></a>关于单音练习</h3><p>在谈的时候，放空大脑，感受指尖的飞舞，啊～Stop！单音练习一定要把谈的音唱出来，这样才能增加音名和指板位置的map的熟悉度。最后可以做到<strong>视谱</strong>就靠这个了。</p><h2 id="4-小机灵鬼的问题"><a href="#4-小机灵鬼的问题" class="headerlink" title="4. 小机灵鬼的问题"></a>4. 小机灵鬼的问题</h2><ol><li><p>音色是什么？</p><p>谐波</p></li><li><p>为什么有的分解和弦，最后的音会变成空弦？</p><p>因为吉他手为了转换和弦的方便，提前移走了。由于不是根音（音乐的创作原理），影响不是很大就可以接受，而且可能会有意想不到的效果哦。</p></li><li><p>为什么要学习不同的调的指法呢，变调夹不是能解决一切么？</p><p>变调夹虽然很厉害，让你只会C调的指法（音阶在指板上的位置熟悉），却可以弹其他调。但是！！如果一首歌有好几个调呢，难道你要快速移动变调夹吗HH。所以不要偷懒机灵鬼们。</p></li></ol>]]></content>
+    <content type="html"><![CDATA[<p>[TOC]</p><h2 id="大白话音乐的基本概念"><a href="#大白话音乐的基本概念" class="headerlink" title="大白话音乐的基本概念"></a>大白话音乐的基本概念</h2><h3 id="声音的物理原理"><a href="#声音的物理原理" class="headerlink" title="声音的物理原理"></a>声音的物理原理</h3><p>声音是一种波，所以由<u>振幅，频率，相位</u></p><p><em>振幅</em>就是通常所说的<strong>音量(volume)</strong></p><p><em>频率</em>则是<strong>音高(pitch)</strong></p><p>波的叠加产生了不同的<strong>音色(timbre)</strong>，这里也涉及到了不同<em>相位波的叠加</em></p><h3 id="音乐的三要素"><a href="#音乐的三要素" class="headerlink" title="音乐的三要素"></a>音乐的三要素</h3><p>节奏，旋律，和声</p><p>节奏是音乐的生命</p><p>旋律是音乐的感情走向</p><p>和声是使音乐表现力更加丰富</p><h3 id="音高的划分—12平均律"><a href="#音高的划分—12平均律" class="headerlink" title="音高的划分—12平均律"></a>音高的划分—12平均律</h3><h3 id="音名，唱名"><a href="#音名，唱名" class="headerlink" title="音名，唱名"></a>音名，唱名</h3><h3 id="为什么划分这些唱名？"><a href="#为什么划分这些唱名？" class="headerlink" title="为什么划分这些唱名？"></a>为什么划分这些唱名？</h3><h3 id="和弦"><a href="#和弦" class="headerlink" title="和弦"></a>和弦</h3><h3 id="常用和弦进行"><a href="#常用和弦进行" class="headerlink" title="常用和弦进行"></a>常用和弦进行</h3><h3 id="什么是调？C调，D调，XX调到底是啥"><a href="#什么是调？C调，D调，XX调到底是啥" class="headerlink" title="什么是调？C调，D调，XX调到底是啥"></a>什么是调？C调，D调，XX调到底是啥</h3><h2 id="识谱，不要做文盲！"><a href="#识谱，不要做文盲！" class="headerlink" title="识谱，不要做文盲！"></a>识谱，不要做文盲！</h2><h3 id="五线谱：音乐的语言"><a href="#五线谱：音乐的语言" class="headerlink" title="五线谱：音乐的语言"></a>五线谱：音乐的语言</h3><h3 id="六线谱：万一按错了呢，还是要这个纠正下"><a href="#六线谱：万一按错了呢，还是要这个纠正下" class="headerlink" title="六线谱：万一按错了呢，还是要这个纠正下"></a>六线谱：万一按错了呢，还是要这个纠正下</h3><h2 id="练琴心得"><a href="#练琴心得" class="headerlink" title="练琴心得"></a>练琴心得</h2><h3 id="关于爬格子"><a href="#关于爬格子" class="headerlink" title="关于爬格子"></a>关于爬格子</h3><p>必要性：顶尖的大师，每天也都会爬格子，何况吾等。能够让你的手指灵活，有力，独立。</p><p>推荐爬格子方法：从60开始，声音饱满节奏稳定以后提速5，正常爬格子速度一般练到100+ ，保留指爬格子一般练到80速左右。 节拍使用四四拍，四分音符，每个音符弹两下。</p><p>爬格子注意：一定要集中注意力爬格子！！一定要集中注意力爬格子！！一定要集中注意力爬格子！！不要以为这是机械的动作就不要注意力了，集中注意，打开手指，努力张开到最大，按的最接近品柱。不然爬格子并不会带来上述收益。</p><p>对了，很努力的爬格子之后，再按和弦会感觉手指很灵活，很轻松。和健身做完大重量做小重量类似的感觉。</p><h3 id="关于单音练习"><a href="#关于单音练习" class="headerlink" title="关于单音练习"></a>关于单音练习</h3><p>在谈的时候，放空大脑，感受指尖的飞舞，啊～Stop！单音练习一定要把谈的音唱出来，这样才能增加音名和指板位置的map的熟悉度。最后可以做到<strong>视谱</strong>就靠这个了。</p><h2 id="小机灵鬼的问题"><a href="#小机灵鬼的问题" class="headerlink" title="小机灵鬼的问题"></a>小机灵鬼的问题</h2><ol><li><p>音色是什么？</p><p>谐波</p></li><li><p>为什么有的分解和弦，最后的音会变成空弦？</p><p>因为吉他手为了转换和弦的方便，提前移走了。由于不是根音（音乐的创作原理），影响不是很大就可以接受，而且可能会有意想不到的效果哦。</p></li><li><p>为什么要学习不同的调的指法呢，变调夹不是能解决一切么？</p><p>变调夹虽然很厉害，让你只会C调的指法（音阶在指板上的位置熟悉），却可以弹其他调。但是！！如果一首歌有好几个调呢，难道你要快速移动变调夹吗HH。所以不要偷懒机灵鬼们。</p></li></ol>]]></content>
     
     <summary type="html">
     
       
       
         &lt;p&gt;[TOC]&lt;/p&gt;
-&lt;h2 id=&quot;1-大白话音乐的基本概念&quot;&gt;&lt;a href=&quot;#1-大白话音乐的基本概念&quot; class=&quot;headerlink&quot; title=&quot;1. 大白话音乐的基本概念&quot;&gt;&lt;/a&gt;1. 大白话音乐的基本概念&lt;/h2&gt;&lt;h3 id=&quot;声音的物理原理&quot;&gt;&lt;
+&lt;h2 id=&quot;大白话音乐的基本概念&quot;&gt;&lt;a href=&quot;#大白话音乐的基本概念&quot; class=&quot;headerlink&quot; title=&quot;大白话音乐的基本概念&quot;&gt;&lt;/a&gt;大白话音乐的基本概念&lt;/h2&gt;&lt;h3 id=&quot;声音的物理原理&quot;&gt;&lt;a href=&quot;#声
       
     
     </summary>
