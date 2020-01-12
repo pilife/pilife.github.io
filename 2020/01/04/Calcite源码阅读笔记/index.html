@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="YouShouldKnow">
 <meta property="og:description" content="Step1: 发现疑问（from csv example） Premise:  官网的tutorial看完，了解了适配csv需要编写的基本逻辑 熟悉volcano/cascades查询优化框架原理 熟悉calcite中基本的阶段(parse, validate, optimize, execute)  Tips:  以下的代码部分，数据结构相关都会在前面加上竖线，遇到读不下去不妨先看数据结构部分的">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-01-12T15:00:32.647Z">
+<meta property="og:updated_time" content="2020-01-12T15:41:52.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Calcite源码阅读笔记">
 <meta name="twitter:description" content="Step1: 发现疑问（from csv example） Premise:  官网的tutorial看完，了解了适配csv需要编写的基本逻辑 熟悉volcano/cascades查询优化框架原理 熟悉calcite中基本的阶段(parse, validate, optimize, execute)  Tips:  以下的代码部分，数据结构相关都会在前面加上竖线，遇到读不下去不妨先看数据结构部分的">
@@ -496,11 +496,15 @@
 <p>This is a marker interface for a callback used to <strong>convert a tree of relational expressions into a plan</strong>. <u>Calling conventions typically have their own protocol for walking over a tree, and correspondingly have their own implementors</u></p>
 <ul>
 <li><p>—&gt;<code>EnumerableRelImplementor</code>：Subclass of org.apache.calcite.plan.RelImplementor for relational operators of <u>EnumerableConvention calling convention</u>.</p>
-<p>主要方法即为<a href="https://github.com/apache/calcite/blob/b8bdfb074be12f90c98f9f1fa2af8cf46f2d36f1/core/src/main/java/org/apache/calcite/adapter/enumerable/EnumerableRelImplementor.java#L102" target="_blank" rel="noopener">implementRoot</a>方法，会调用EnumerableRel#implement生成表达式在Enumerable Convention下的plan，最后生成ClassDeclaration的实例;</p>
+<p>主要方法即为<a href="https://github.com/apache/calcite/blob/b8bdfb074be12f90c98f9f1fa2af8cf46f2d36f1/core/src/main/java/org/apache/calcite/adapter/enumerable/EnumerableRelImplementor.java#L102" target="_blank" rel="noopener">implementRoot</a>方法，会调用<strong>EnumerableRel#implement</strong>生成表达式在Enumerable Convention下的plan，最后生成ClassDeclaration的实例;</p>
 </li>
 </ul>
 </li>
 </ul>
+<blockquote>
+<p>值得一提的是，最终ResultSet的next()方法，本质上是调用了Cursor的next()方法，而Cursor的next()方法，本质上在调用linq4j包下的<a href="https://github.com/apache/calcite/blob/295ab13e8338bdd0e0c29e051907371c9b2929aa/linq4j/src/main/java/org/apache/calcite/linq4j/Linq4j.java#L668" target="_blank" rel="noopener">EnumeratorIterator</a>的hasNext()和next()方法，且在初始化Iterator的时候会先调用next()方法来确定是否hasNext，即hasNext()是由next()方法确定的。</p>
+<p>在prepareAndExecute方法会先execute找到第一个存在的行，之后返回，进行ResultSet遍历</p>
+</blockquote>
 <h1 id="Step3-解答疑问（from-step-1）"><a href="#Step3-解答疑问（from-step-1）" class="headerlink" title="Step3: 解答疑问（from step 1）"></a>Step3: 解答疑问（from step 1）</h1><h1 id="Step4-如何在此基础上实现平台间数据迁移"><a href="#Step4-如何在此基础上实现平台间数据迁移" class="headerlink" title="Step4: 如何在此基础上实现平台间数据迁移"></a>Step4: 如何在此基础上实现平台间数据迁移</h1><h1 id="Step5-如何做到跨平台的Join-Reorder"><a href="#Step5-如何做到跨平台的Join-Reorder" class="headerlink" title="Step5: 如何做到跨平台的Join Reorder"></a>Step5: 如何做到跨平台的Join Reorder</h1><h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h1><ol>
 <li>官网教程:  <a href="https://calcite.apache.org/docs/index.html" target="_blank" rel="noopener">https://calcite.apache.org/docs/index.html</a></li>
 <li>Calcite简介：<a href="https://www.slideshare.net/JordanHalterman/introduction-to-apache-calcite" target="_blank" rel="noopener">https://www.slideshare.net/JordanHalterman/introduction-to-apache-calcite</a></li>
