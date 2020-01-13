@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="YouShouldKnow">
 <meta property="og:description" content="Step1: 发现疑问（from csv example） Premise:  官网的tutorial看完，了解了适配csv需要编写的基本逻辑 熟悉volcano/cascades查询优化框架原理 熟悉calcite中基本的阶段(parse, validate, optimize, execute)  Tips:  以下的代码部分，数据结构相关都会在前面加上竖线，遇到读不下去不妨先看数据结构部分的">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-01-13T13:55:11.547Z">
+<meta property="og:updated_time" content="2020-01-13T15:23:33.999Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Calcite源码阅读笔记">
 <meta name="twitter:description" content="Step1: 发现疑问（from csv example） Premise:  官网的tutorial看完，了解了适配csv需要编写的基本逻辑 熟悉volcano/cascades查询优化框架原理 熟悉calcite中基本的阶段(parse, validate, optimize, execute)  Tips:  以下的代码部分，数据结构相关都会在前面加上竖线，遇到读不下去不妨先看数据结构部分的">
@@ -561,11 +561,19 @@
 <li>在<code>RelOptTable</code>中根据填充的table实现的接口，如（TranslatableTable, ScannableTable）来确定其如何转化成<code>RelNode</code></li>
 </ul>
 <h1 id="Step4-如何在此基础上实现平台间数据迁移"><a href="#Step4-如何在此基础上实现平台间数据迁移" class="headerlink" title="Step4: 如何在此基础上实现平台间数据迁移"></a>Step4: 如何在此基础上实现平台间数据迁移</h1><p>要解决这个问题需要弄清楚两个问题：</p>
-<ol>
-<li>确定不同数据源即数据在不同的Convention中是如何添加Converter进行Convention的转换的?</li>
-<li>添加完Converter后，Converter是如何执行的，是否可以集成在Calcite中？</li>
-</ol>
-<p>下面针对这两个问题，进行代码debug </p>
+<p>Q1: 确定不同数据源即数据在不同的Convention中是如何添加Converter进行Convention的转换的?</p>
+<p>Q2: 添加完Converter后，Converter是如何执行的，是否可以集成在Calcite中？</p>
+<p>下面针对这两个问题，进行代码debug ，由于此处需要Converter，因此此处用calcite的jdbc adapter访问clickhouse来构造测试用例。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> project_name, project_name <span class="keyword">FROM</span> clickhouse.em_projects <span class="keyword">as</span> p;</span><br></pre></td></tr></table></figure>
+<p>Q1: </p>
+<p>通过debug optimze的过程中plan的变化，得知plan是在changeTraits完之后setRoot时候添加上Converter的，此时是一个AbstractConverter（待implement）</p>
+<p>通过debug findBestExp的过程中整个memo的变化（规则匹配），发现ExpandConversionRule是用来implement AbstractConverter的规则，<strong>这个规则会将AbstractConverter转化为一个converter链</strong>，从而得到目标的convention。通过之前建立<strong>转化图的传递闭包</strong>(见之前addRule函数的介绍)，这里会选择最短的链。</p>
+<blockquote>
+<p>如果target subset已经存在implementation，则不会触发</p>
+<p>如果source subset是abstract的，那么会标记该subset，一旦有non-abstract的rel exp添加进去就触发转换</p>
+</blockquote>
+<p>因此这里最先匹配该规则后由于input/source 的subset是abstract的，因此无效。继而匹配其他规则，最终是JdbcToEnumerableConverter, JdbcProjectRule得到了最优的plan。</p>
+<p>Q2：</p>
 <h1 id="Step5-如何做到跨平台的Join-Reorder"><a href="#Step5-如何做到跨平台的Join-Reorder" class="headerlink" title="Step5: 如何做到跨平台的Join Reorder"></a>Step5: 如何做到跨平台的Join Reorder</h1><h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h1><ol>
 <li>官网教程:  <a href="https://calcite.apache.org/docs/index.html" target="_blank" rel="noopener">https://calcite.apache.org/docs/index.html</a></li>
 <li>Calcite简介：<a href="https://www.slideshare.net/JordanHalterman/introduction-to-apache-calcite" target="_blank" rel="noopener">https://www.slideshare.net/JordanHalterman/introduction-to-apache-calcite</a></li>
