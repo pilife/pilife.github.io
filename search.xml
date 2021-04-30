@@ -3,9 +3,149 @@
   <entry>
     <title>你真的理解时钟吗？</title>
     <url>/2021/04/28/%E4%BD%A0%E7%9C%9F%E7%9A%84%E7%9F%A5%E9%81%93%E6%97%B6%E9%92%9F%E5%90%97%EF%BC%9F/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h2 id="时钟分类"><a href="#时钟分类" class="headerlink" title="时钟分类"></a>时钟分类</h2><p>首先需要了解时钟有哪几种，通过阅读time.h文件，可以发现共定义了12种时钟</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#  <span class="meta-keyword">ifdef</span> __USE_POSIX199309</span></span><br><span class="line"><span class="comment">/* Identifier for system-wide realtime clock.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_REALTIME		0</span></span><br><span class="line"><span class="comment">/* Monotonic system-wide clock.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_MONOTONIC		1</span></span><br><span class="line"><span class="comment">/* High-resolution timer from the CPU.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_PROCESS_CPUTIME_ID	2</span></span><br><span class="line"><span class="comment">/* Thread-specific CPU-time clock.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_THREAD_CPUTIME_ID	3</span></span><br><span class="line"><span class="comment">/* Monotonic system-wide clock, not adjusted for frequency scaling.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_MONOTONIC_RAW		4</span></span><br><span class="line"><span class="comment">/* Identifier for system-wide realtime clock, updated only on ticks.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_REALTIME_COARSE	5</span></span><br><span class="line"><span class="comment">/* Monotonic system-wide clock, updated only on ticks.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_MONOTONIC_COARSE	6</span></span><br><span class="line"><span class="comment">/* Monotonic system-wide clock that includes time spent in suspension.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_BOOTTIME		7</span></span><br><span class="line"><span class="comment">/* Like CLOCK_REALTIME but also wakes suspended system.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_REALTIME_ALARM		8</span></span><br><span class="line"><span class="comment">/* Like CLOCK_BOOTTIME but also wakes suspended system.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_BOOTTIME_ALARM		9</span></span><br><span class="line"><span class="comment">/* Like CLOCK_REALTIME but in International Atomic Time.  */</span></span><br><span class="line"><span class="meta">#   <span class="meta-keyword">define</span> CLOCK_TAI			11</span></span><br></pre></td></tr></table></figure>
+
+<p>总结一下，时钟按以下几个维度进行区分：</p>
+<ul>
+<li>墙上时钟/单调时钟</li>
+<li>系统时钟/线程进程时钟</li>
+<li>是否只在Tick时更新</li>
+<li>是否包含挂起时间</li>
+<li>…</li>
+</ul>
+<p><strong><u>定义的12个时钟是以上一个或多个维度的组合</u></strong></p>
+<p>本文主要关注的是最常用的<code>CLOCK_REALTIME</code>和<code>CLOCK_MONOTONIC</code>的使用</p>
+<h2 id="时钟相关调用"><a href="#时钟相关调用" class="headerlink" title="时钟相关调用"></a>时钟相关调用</h2><ol>
+<li>线程阻塞，一段时间后恢复就绪<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta"># glibc (POSIX)</span></span><br><span class="line">sleep</span><br></pre></td></tr></table></figure></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>层次（库）</th>
+<th>函数</th>
+<th>使用时钟</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>glibc (POSIX)</td>
+<td>sleep/nanosleep</td>
+<td>CLOCK_MONOTONIC</td>
+<td>POSIX规范推荐使用CLOCK_REALTIME，但是跳变不会影响sleep时间<br />Linux实现使用的是CLOCK_MONOTONIC</td>
+</tr>
+</tbody></table>
+<ol start="2">
+<li>线程阻塞，等待唤醒或者超时<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta"># glibc (POSIX)</span></span><br><span class="line">pthread_cond_timedwait</span><br><span class="line">pthread_cond_clockwait #<span class="meta"># since glibc 2.30</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># stdlibc++</span></span><br><span class="line">std::condition_variable::wait_for</span><br><span class="line">std::condition_variable::wait_until</span><br></pre></td></tr></table></figure></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>层次（库）</th>
+<th>函数</th>
+<th>使用时钟</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>glibc (POSIX)</td>
+<td>pthread_cond_timedwait</td>
+<td>可选</td>
+<td>通过pthread_condattr_setclock选择时钟</td>
+</tr>
+<tr>
+<td></td>
+<td>pthread_cond_clockwait</td>
+<td>可选</td>
+<td>since glibc 2.30</td>
+</tr>
+<tr>
+<td>stdlibc++</td>
+<td>std::condition_variable::wait_for</td>
+<td>CLOCK_REALTIME</td>
+<td>since gcc10变为CLOCK_MONOTONIC</td>
+</tr>
+<tr>
+<td></td>
+<td>std::condition_variable::wait_until</td>
+<td>CLOCK_REALTIME</td>
+<td>since gcc10变为CLOCK_MONOTONIC</td>
+</tr>
+<tr>
+<td>boost</td>
+<td>boost::condition_variable::wait_for</td>
+<td>CLOCK_MONOTONIC</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>boost::condition_variable::wait_until</td>
+<td>CLOCK_MONOTONIC</td>
+<td></td>
+</tr>
+</tbody></table>
+<ol start="3">
+<li>线程阻塞，等待fd就绪或者超时<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"># System Call</span><br><span class="line">epoll_wait <span class="comment">// CLOCK_MONOTONIC</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># libevent</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">event_add</span><span class="params">(struct event *ev, <span class="keyword">const</span> struct timeval *timeout)</span></span>;</span><br><span class="line">  </span><br><span class="line"><span class="meta"># folly</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">EventBase::scheduleTimeout</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    AsyncTimeout* obj, TimeoutManager::timeout_type timeout)</span></span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>层次（库）</th>
+<th>函数</th>
+<th>使用时钟</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>System Call</td>
+<td>epoll_wait</td>
+<td>CLOCK_MONOTONIC</td>
+<td></td>
+</tr>
+<tr>
+<td>libevent</td>
+<td>event_add</td>
+<td>CLOCK_MONOTONIC</td>
+<td>传入relative time即可，背后用的是monotime</td>
+</tr>
+<tr>
+<td>folly</td>
+<td>EventBase::scheduleTimeout</td>
+<td>CLOCK_MONOTONIC</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>EventBase::runAfterDelay</td>
+<td>CLOCK_MONOTONIC</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
+<li><p><a href="https://man7.org/linux/man-pages/man2/nanosleep.2.html">[doc] nanosleep</a></p>
+</li>
+<li><p><a href="https://gcc.gnu.org/bugzilla/show_bug.cgi?id=41861#c20">[issue] std::condition_variable in bugzilla</a></p>
+</li>
+<li><p><a href="https://linux.die.net/man/3/pthread_condattr_setclock">[doc] pthread_condattr_setclock</a></p>
+</li>
+<li><p><a href="https://github.com/walac/glibc/blob/master/nptl/pthread_cond_init.c">[code] pthread_cond_init</a></p>
+</li>
+</ol>
+<h2 id="Appendix"><a href="#Appendix" class="headerlink" title="Appendix"></a>Appendix</h2><h3 id="代码片段详解："><a href="#代码片段详解：" class="headerlink" title="代码片段详解："></a>代码片段详解：</h3><p>通过以上调用的总结可以发现，使用上模糊的点主要是通过条件变量进行通信的场景，pthread上提供的最基本的函数是可选的，在std和boost分别采用了不同的时钟。下面直接看实现的代码：</p>
+<h4 id="pthread-cond-t"><a href="#pthread-cond-t" class="headerlink" title="pthread_cond_t"></a>pthread_cond_t</h4><p>存储控制<code>pthread_cond_timedwait</code>使用时钟的数据结构<code>pthread_cond_t</code></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Data structure for conditional variable handling.  The structure of</span></span><br><span class="line"><span class="comment">   the attribute type is not exposed on purpose.  */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">union</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">  &#123;</span></span><br><span class="line">    <span class="keyword">int</span> __lock;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> __futex;</span><br><span class="line">    __extension__ <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> <span class="keyword">int</span> __total_seq;</span><br><span class="line">    __extension__ <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> <span class="keyword">int</span> __wakeup_seq;</span><br><span class="line">    __extension__ <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> <span class="keyword">int</span> __woken_seq;</span><br><span class="line">    <span class="keyword">void</span> *__mutex;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> __nwaiters;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> __broadcast_seq;</span><br><span class="line">  &#125; __data; <span class="comment">// __nwaiters 存储了时钟的信息</span></span><br><span class="line">  <span class="keyword">char</span> __size[__SIZEOF_PTHREAD_COND_T];</span><br><span class="line">  __extension__ <span class="keyword">long</span> <span class="keyword">long</span> <span class="keyword">int</span> __align;</span><br><span class="line">&#125; <span class="keyword">pthread_cond_t</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="std-condition-variable"><a href="#std-condition-variable" class="headerlink" title="std::condition_variable"></a>std::condition_variable</h4><p>std如何初始化<code>pthread_cond_t</code></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">pthread_cond_t</span> <span class="keyword">__gthread_cond_t</span>; <span class="comment">// 1. 核心是初始化pthread_cond_t这个类</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">/// condition_variable</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">condition_variable</span></span></span><br><span class="line"><span class="class">  &#123;</span></span><br><span class="line">    <span class="keyword">typedef</span> chrono::system_clock	<span class="keyword">__clock_t</span>;</span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">__gthread_cond_t</span>		__native_type;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __GTHREAD_COND_INIT</span></span><br><span class="line">    __native_type			_M_cond = __GTHREAD_COND_INIT; <span class="comment">// 2. 在这里进行了初始化</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">    __native_type			_M_cond;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	······</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> __GTHREAD_COND_INIT PTHREAD_COND_INITIALIZER</span></span><br><span class="line"><span class="comment">/* Conditional variable handling.  */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PTHREAD_COND_INITIALIZER &#123; &#123; 0, 0, 0, 0, 0, (void *) 0, 0, 0 &#125; &#125; <span class="comment">// 3. 具体初始化的参数</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="boost-conditional-variable"><a href="#boost-conditional-variable" class="headerlink" title="boost::conditional_variable"></a>boost::conditional_variable</h4><p>boost如何初始化<code>pthread_cond_t</code></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">condition_variable</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line"><span class="comment">//#if defined BOOST_THREAD_PROVIDES_INTERRUPTIONS</span></span><br><span class="line">        <span class="keyword">pthread_mutex_t</span> internal_mutex;</span><br><span class="line"><span class="comment">//#endif</span></span><br><span class="line">        <span class="keyword">pthread_cond_t</span> cond; <span class="comment">// 1. 核心是初始化pthread_cond_t这个类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">      <span class="built_in">BOOST_THREAD_NO_COPYABLE</span>(condition_variable)</span><br><span class="line">        <span class="built_in">condition_variable</span>()</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> res;</span><br><span class="line">            ```省略初始化mutex</span><br><span class="line">            res = pthread::<span class="built_in">cond_init</span>(cond); <span class="comment">// 2. 在这里进行了初始化</span></span><br><span class="line">            ```省略后续判断</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     </span><br><span class="line">     </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> boost</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">namespace</span> pthread</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">cond_init</span><span class="params">(<span class="keyword">pthread_cond_t</span>&amp; cond)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">ifdef</span> BOOST_THREAD_INTERNAL_CLOCK_IS_MONO</span></span><br><span class="line">              <span class="keyword">pthread_condattr_t</span> attr;</span><br><span class="line">              <span class="keyword">int</span> res = <span class="built_in">pthread_condattr_init</span>(&amp;attr);</span><br><span class="line">              <span class="keyword">if</span> (res)</span><br><span class="line">              &#123;</span><br><span class="line">                <span class="keyword">return</span> res;</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="built_in">pthread_condattr_setclock</span>(&amp;attr, CLOCK_MONOTONIC); <span class="comment">// 3. 设置了时钟attr为MONO</span></span><br><span class="line">              res=<span class="built_in">pthread_cond_init</span>(&amp;cond,&amp;attr);</span><br><span class="line">              <span class="built_in">pthread_condattr_destroy</span>(&amp;attr);</span><br><span class="line">              <span class="keyword">return</span> res;</span><br><span class="line">  <span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">              <span class="keyword">return</span> <span class="built_in">pthread_cond_init</span>(&amp;cond,<span class="literal">NULL</span>);</span><br><span class="line">  <span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
       <categories>
-        <category>编程基础</category>
+        <category>计算机基础</category>
       </categories>
       <tags>
         <tag>时钟</tag>
