@@ -130,6 +130,8 @@
 </li>
 <li><p><a href="https://github.com/walac/glibc/blob/master/nptl/pthread_cond_init.c">[code] pthread_cond_init</a></p>
 </li>
+<li><p><a href="https://github.com/walac/glibc/tree/master/nptl">[code] pthread</a></p>
+</li>
 </ol>
 <h2 id="Appendix"><a href="#Appendix" class="headerlink" title="Appendix"></a>Appendix</h2><h3 id="代码片段详解："><a href="#代码片段详解：" class="headerlink" title="代码片段详解："></a>代码片段详解：</h3><p>通过以上调用的总结可以发现，使用上模糊的点主要是通过条件变量进行通信的场景，pthread上提供的最基本的函数是可选的，在std和boost分别采用了不同的时钟。下面直接看实现的代码：</p>
 <h4 id="pthread-cond-t"><a href="#pthread-cond-t" class="headerlink" title="pthread_cond_t"></a>pthread_cond_t</h4><p>存储控制<code>pthread_cond_timedwait</code>使用时钟的数据结构<code>pthread_cond_t</code>：</p>
