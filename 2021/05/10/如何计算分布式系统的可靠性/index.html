@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;blog.youshouldknow.tech&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Muse&quot;,&quot;version&quot;:&quot;8.4.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;right&quot;,&quot;display&quot;:&quot;always&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:true,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:true,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:true,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:&quot;disqus&quot;,&quot;storage&quot;:true,&quot;lazyload&quot;:true,&quot;nav&quot;:null,&quot;activeClass&quot;:&quot;disqus&quot;},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script>
+<meta name="description" content="基础知识 泊松分布：描述单位时间内随机事件发生的次数的概率分布 $$ P(X&#x3D;k)&#x3D;\frac{e^{-\lambda}\lambda^k}{k!} $$  问题建模 问题定义 简略描述：分布式存储系统年失效率  详细描述：以硬盘为存储数据的基本物理单位，一年时间内，硬盘故障导致数据丢失的概率  问题拆解  1. 单个硬盘单位时间故障概率 $\lambda$  2. K个硬盘一段时间T内故障概率">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何计算分布式系统的可靠性">
+<meta property="og:url" content="https://blog.youshouldknow.tech/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/index.html">
+<meta property="og:site_name" content="YouShouldKnow.Tech">
+<meta property="og:description" content="基础知识 泊松分布：描述单位时间内随机事件发生的次数的概率分布 $$ P(X&#x3D;k)&#x3D;\frac{e^{-\lambda}\lambda^k}{k!} $$  问题建模 问题定义 简略描述：分布式存储系统年失效率  详细描述：以硬盘为存储数据的基本物理单位，一年时间内，硬盘故障导致数据丢失的概率  问题拆解  1. 单个硬盘单位时间故障概率 $\lambda$  2. K个硬盘一段时间T内故障概率">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.youshouldknow.tech/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/如何计算分布式系统的可靠性/afr_age.png">
+<meta property="og:image" content="https://blog.youshouldknow.tech/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/300px-Exponential.svg-20210510195955279.png">
+<meta property="article:published_time" content="2021-05-10T16:48:46.000Z">
+<meta property="article:modified_time" content="2021-05-10T16:09:14.556Z">
+<meta property="article:author" content="Yi">
+<meta property="article:tag" content="可靠性">
+<meta property="article:tag" content="概率论">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.youshouldknow.tech/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/如何计算分布式系统的可靠性/afr_age.png">
+
+
+<link rel="canonical" href="https://blog.youshouldknow.tech/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;https:&#x2F;&#x2F;blog.youshouldknow.tech&#x2F;2021&#x2F;05&#x2F;10&#x2F;%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;05&#x2F;10&#x2F;如何计算分布式系统的可靠性&#x2F;&quot;,&quot;title&quot;:&quot;如何计算分布式系统的可靠性&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>如何计算分布式系统的可靠性 | YouShouldKnow.Tech</title><script src="/js/config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">YouShouldKnow.Tech</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/me" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">基础知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%BB%BA%E6%A8%A1"><span class="nav-number">2.</span> <span class="nav-text">问题建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">问题定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8B%86%E8%A7%A3"><span class="nav-number">2.2.</span> <span class="nav-text">问题拆解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3"><span class="nav-number">2.3.</span> <span class="nav-text">问题求解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lambda"><span class="nav-number">2.3.1.</span> <span class="nav-text">$\lambda$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#P-a-T-K"><span class="nav-number">2.3.2.</span> <span class="nav-text">$P_a(T,K)$</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#P-b-K"><span class="nav-number">2.3.3.</span> <span class="nav-text">$P_b(K)$</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#P-c-T"><span class="nav-number">2.4.</span> <span class="nav-text">$P_c(T)$</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%86%E8%8A%82%E8%A1%A5%E5%85%85"><span class="nav-number">3.</span> <span class="nav-text">细节补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%89%AF%E6%9C%AC%E5%9C%BA%E6%99%AF"><span class="nav-number">3.1.</span> <span class="nav-text">多副本场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EC%E5%9C%BA%E6%99%AF"><span class="nav-number">3.2.</span> <span class="nav-text">EC场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yi"
+      src="/images/zy_avatar.jpg">
+  <p class="site-author-name" itemprop="name">Yi</p>
+  <div class="site-description" itemprop="description">The world is wonderful, you should know more</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/pilife" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;pilife" rel="noopener" target="_blank">GitHub</a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.youshouldknow.tech/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zy_avatar.jpg">
+      <meta itemprop="name" content="Yi">
+      <meta itemprop="description" content="The world is wonderful, you should know more">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YouShouldKnow.Tech">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何计算分布式系统的可靠性
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-05-10 16:48:46 / 修改时间：16:09:14" itemprop="dateCreated datePublished" datetime="2021-05-10T16:48:46+00:00">2021-05-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A6%82%E7%8E%87%E8%AE%BA%E5%BA%94%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">概率论应用</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/05/10/如何计算分布式系统的可靠性/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>泊松分布：描述<strong>单位时间内</strong>随机事件发生的<strong>次数</strong>的概率分布<br>$$<br>P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}<br>$$</p>
+<h2 id="问题建模"><a href="#问题建模" class="headerlink" title="问题建模"></a>问题建模</h2><h3 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h3><p>简略描述：分布式存储系统年失效率</p>
+<p>详细描述：以硬盘为存储数据的基本物理单位，一年时间内，硬盘故障导致数据丢失的概率</p>
+<h3 id="问题拆解"><a href="#问题拆解" class="headerlink" title="问题拆解"></a>问题拆解</h3><ol>
+<li>单个硬盘单位时间故障概率 $\lambda$</li>
+<li><code>K</code>个硬盘一段时间<code>T</code>内故障概率 $P_a(T,K)$</li>
+<li>损坏的<code>K</code>个硬盘恰好造成数据丢失的概率 $P_b(K)$</li>
+<li><code>T</code>时间内，硬盘故障导致数据丢失的概率 $P_c(T)$</li>
+</ol>
+<h3 id="问题求解"><a href="#问题求解" class="headerlink" title="问题求解"></a>问题求解</h3><h4 id="lambda"><a href="#lambda" class="headerlink" title="$\lambda$"></a>$\lambda$</h4><p> $\lambda$通过统计即可得到，设为<code>t</code>的单位时间(设为1小时)内发生磁盘损坏的平均次数，根据google的统计，磁盘的年失败率(AFR: Fnnualized Failure Rate)如下图所示，我们取一个平均值4来进行计算，那么就是0.0004566</p>
+<img data-src="如何计算分布式系统的可靠性/afr_age.png" style="zoom: 33%;" />
+
+<h4 id="P-a-T-K"><a href="#P-a-T-K" class="headerlink" title="$P_a(T,K)$"></a>$P_a(T,K)$</h4><p>通过 $\lambda$以及泊松分布的公式，可以计算得到$P_a(T,K)$</p>
+<h4 id="P-b-K"><a href="#P-b-K" class="headerlink" title="$P_b(K)$"></a>$P_b(K)$</h4><p>通过数据复制方式和副本放置策略，可以建模得到 $P_b(K)$，数据复制方式分为多副本和EC，副本放置策略可以是固定位置放置，可以是随机不重复放置</p>
+<blockquote>
+<p>Q：关于随机不重复放置，是否能保证有足够的放置策略让副本放置不重复呢？</p>
+<p>A：随着集群规模增大，可容纳数据量呈线性增长，放置策略数量呈幂增长，因此可以认为放置策略远远大于需要放置的数据量（数据复制的基本单位是副本）</p>
+<p>以下证明：</p>
+<p>假设一个磁盘中副本数量为100，副本/EC数为N，集群中磁盘的数量为D</p>
+<p>可容纳数据量：$D * 100 / N$</p>
+<p>放置策略数量：$(D/N)^N$</p>
+<p><img data-src="%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/300px-Exponential.svg-20210510195955279.png" alt="img"></p>
+</blockquote>
+<h3 id="P-c-T"><a href="#P-c-T" class="headerlink" title="$P_c(T)$"></a>$P_c(T)$</h3><p>通过$P_a(T,K)*P_b(K)$可以得到<code>T</code>时间内损坏磁盘数量为<code>K</code>时，数据丢失的概率。将所有可能的<code>K</code>计算得到的概率相加即可得到$P_c(T)$，计算公式如下：<br>$$<br>\sum P_a(T,K)*P_b(K) \<br>K \ge min\ number\ of\ replica\ to\ be\ removed<br>$$</p>
+<h2 id="细节补充"><a href="#细节补充" class="headerlink" title="细节补充"></a>细节补充</h2><p>通过对问题进行建模，发现唯一不确定的地方就是$P_b(K)$的计算，不同的数据复制方式，如多副本和EC；以及不同的副本放置策略，如固定位置和随机不重复放置，都会导致$P_b(K)$的计算不同，以下对各类场景进行具体分析</p>
+<h3 id="多副本场景"><a href="#多副本场景" class="headerlink" title="多副本场景"></a>多副本场景</h3><h3 id="EC场景"><a href="#EC场景" class="headerlink" title="EC场景"></a>EC场景</h3><h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
+<li><a target="_blank" rel="noopener" href="http://oceanbase.org.cn/?p=151">[blog] OceanBase 磁盘故障与存储系统的年失效率估算</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/47505443">[blog] 如何量化分布式存储系统的可靠性</a></li>
+<li><a target="_blank" rel="noopener" href="https://storagemojo.com/2007/02/19/googles-disk-failure-experience/">[blog] Google’s Disk Failure Experience</a></li>
+<li><a target="_blank" rel="noopener" href="http://static.googleusercontent.com/media/research.google.com/en//archive/disk_failures.pdf">[paper] Failure Trends in a Large Disk Drive Population</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div></div>
+  <button onclick="document.querySelector('.post-reward').classList.toggle('active');">
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="Yi 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Yi
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blog.youshouldknow.tech/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/" title="如何计算分布式系统的可靠性">https://blog.youshouldknow.tech/2021/05/10/如何计算分布式系统的可靠性/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%8F%AF%E9%9D%A0%E6%80%A7/" rel="tag"># 可靠性</a>
+              <a href="/tags/%E6%A6%82%E7%8E%87%E8%AE%BA/" rel="tag"># 概率论</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/28/%E4%BD%A0%E7%9C%9F%E7%9A%84%E7%9F%A5%E9%81%93%E6%97%B6%E9%92%9F%E5%90%97%EF%BC%9F/" rel="prev" title="你真的理解时钟吗？">
+                  <i class="fa fa-chevron-left"></i> 你真的理解时钟吗？
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  <script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+  <div class="languages">
+    <label class="lang-select-label">
+      <i class="fa fa-language"></i>
+      <span>简体中文</span>
+      <i class="fa fa-angle-up" aria-hidden="true"></i>
+    </label>
+    <select class="lang-select" data-canonical="" aria-label="选择语言">
+      
+        <option value="zh-CN" data-href="/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/" selected="">
+          简体中文
+        </option>
+      
+        <option value="en" data-href="/en/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/" selected="">
+          English
+        </option>
+      
+    </select>
+  </div>
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@next-theme/pjax@0.5.0/pjax.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lozad@1.16.0/dist/lozad.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{&quot;enable&quot;:true,&quot;shortname&quot;:&quot;yizhang&quot;,&quot;count&quot;:true,&quot;i18n&quot;:{&quot;disqus&quot;:&quot;disqus&quot;}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

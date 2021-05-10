@@ -195,4 +195,47 @@
         <tag>时钟</tag>
       </tags>
   </entry>
+  <entry>
+    <title>如何计算分布式系统的可靠性</title>
+    <url>/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/</url>
+    <content><![CDATA[<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>泊松分布：描述<strong>单位时间内</strong>随机事件发生的<strong>次数</strong>的概率分布<br>$$<br>P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}<br>$$</p>
+<h2 id="问题建模"><a href="#问题建模" class="headerlink" title="问题建模"></a>问题建模</h2><h3 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h3><p>简略描述：分布式存储系统年失效率</p>
+<p>详细描述：以硬盘为存储数据的基本物理单位，一年时间内，硬盘故障导致数据丢失的概率</p>
+<h3 id="问题拆解"><a href="#问题拆解" class="headerlink" title="问题拆解"></a>问题拆解</h3><ol>
+<li>单个硬盘单位时间故障概率 $\lambda$</li>
+<li><code>K</code>个硬盘一段时间<code>T</code>内故障概率 $P_a(T,K)$</li>
+<li>损坏的<code>K</code>个硬盘恰好造成数据丢失的概率 $P_b(K)$</li>
+<li><code>T</code>时间内，硬盘故障导致数据丢失的概率 $P_c(T)$</li>
+</ol>
+<h3 id="问题求解"><a href="#问题求解" class="headerlink" title="问题求解"></a>问题求解</h3><h4 id="lambda"><a href="#lambda" class="headerlink" title="$\lambda$"></a>$\lambda$</h4><p> $\lambda$通过统计即可得到，设为<code>t</code>的单位时间(设为1小时)内发生磁盘损坏的平均次数，根据google的统计，磁盘的年失败率(AFR: Fnnualized Failure Rate)如下图所示，我们取一个平均值4来进行计算，那么就是0.0004566</p>
+<img data-src="如何计算分布式系统的可靠性/afr_age.png" style="zoom: 33%;" />
+
+<h4 id="P-a-T-K"><a href="#P-a-T-K" class="headerlink" title="$P_a(T,K)$"></a>$P_a(T,K)$</h4><p>通过 $\lambda$以及泊松分布的公式，可以计算得到$P_a(T,K)$</p>
+<h4 id="P-b-K"><a href="#P-b-K" class="headerlink" title="$P_b(K)$"></a>$P_b(K)$</h4><p>通过数据复制方式和副本放置策略，可以建模得到 $P_b(K)$，数据复制方式分为多副本和EC，副本放置策略可以是固定位置放置，可以是随机不重复放置</p>
+<blockquote>
+<p>Q：关于随机不重复放置，是否能保证有足够的放置策略让副本放置不重复呢？</p>
+<p>A：随着集群规模增大，可容纳数据量呈线性增长，放置策略数量呈幂增长，因此可以认为放置策略远远大于需要放置的数据量（数据复制的基本单位是副本）</p>
+<p>以下证明：</p>
+<p>假设一个磁盘中副本数量为100，副本/EC数为N，集群中磁盘的数量为D</p>
+<p>可容纳数据量：$D * 100 / N$</p>
+<p>放置策略数量：$(D/N)^N$</p>
+<p><img data-src="%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/300px-Exponential.svg-20210510195955279.png" alt="img"></p>
+</blockquote>
+<h3 id="P-c-T"><a href="#P-c-T" class="headerlink" title="$P_c(T)$"></a>$P_c(T)$</h3><p>通过$P_a(T,K)*P_b(K)$可以得到<code>T</code>时间内损坏磁盘数量为<code>K</code>时，数据丢失的概率。将所有可能的<code>K</code>计算得到的概率相加即可得到$P_c(T)$，计算公式如下：<br>$$<br>\sum P_a(T,K)*P_b(K) \<br>K \ge min\ number\ of\ replica\ to\ be\ removed<br>$$</p>
+<h2 id="细节补充"><a href="#细节补充" class="headerlink" title="细节补充"></a>细节补充</h2><p>通过对问题进行建模，发现唯一不确定的地方就是$P_b(K)$的计算，不同的数据复制方式，如多副本和EC；以及不同的副本放置策略，如固定位置和随机不重复放置，都会导致$P_b(K)$的计算不同，以下对各类场景进行具体分析</p>
+<h3 id="多副本场景"><a href="#多副本场景" class="headerlink" title="多副本场景"></a>多副本场景</h3><h3 id="EC场景"><a href="#EC场景" class="headerlink" title="EC场景"></a>EC场景</h3><h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
+<li><a href="http://oceanbase.org.cn/?p=151">[blog] OceanBase 磁盘故障与存储系统的年失效率估算</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/47505443">[blog] 如何量化分布式存储系统的可靠性</a></li>
+<li><a href="https://storagemojo.com/2007/02/19/googles-disk-failure-experience/">[blog] Google’s Disk Failure Experience</a></li>
+<li><a href="http://static.googleusercontent.com/media/research.google.com/en//archive/disk_failures.pdf">[paper] Failure Trends in a Large Disk Drive Population</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>概率论应用</category>
+      </categories>
+      <tags>
+        <tag>可靠性</tag>
+        <tag>概率论</tag>
+      </tags>
+  </entry>
 </search>

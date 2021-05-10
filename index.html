@@ -160,20 +160,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -221,6 +221,121 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.youshouldknow.tech/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zy_avatar.jpg">
+      <meta itemprop="name" content="Yi">
+      <meta itemprop="description" content="The world is wonderful, you should know more">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YouShouldKnow.Tech">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/" class="post-title-link" itemprop="url">如何计算分布式系统的可靠性</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-05-10 16:48:46 / 修改时间：16:09:14" itemprop="dateCreated datePublished" datetime="2021-05-10T16:48:46+00:00">2021-05-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A6%82%E7%8E%87%E8%AE%BA%E5%BA%94%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">概率论应用</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/05/10/如何计算分布式系统的可靠性/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          基础知识
+泊松分布：描述单位时间内随机事件发生的次数的概率分布
+$$
+P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}
+$$
+
+问题建模
+问题定义
+简略描述：分布式存储系统年失效率
+
+详细描述：以硬盘为存储数据的基本物理单位，一年时间内，硬盘故障导致数据丢失的概率
+
+问题拆解
+ 1. 单个硬盘单位时间故障概率 $\lambda$
+ 2. K个硬盘一段时间T内故障概率 $P_a(T,K)$
+ 3. 损坏的K个硬盘恰好造成数据丢失的概率 $P_b(K)$
+ 4. T时间内，硬盘故障导致数据丢失的概率 $P_c(T)$
+
+问题求解
+$\lambda$
+ $\lambda
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://blog.youshouldknow.tech/2021/04/28/%E4%BD%A0%E7%9C%9F%E7%9A%84%E7%9F%A5%E9%81%93%E6%97%B6%E9%92%9F%E5%90%97%EF%BC%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -252,7 +367,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-05-10 12:41:43" itemprop="dateModified" datetime="2021-05-10T12:41:43+00:00">2021-05-10</time>
+        <time title="修改时间：2021-05-10 16:09:14" itemprop="dateModified" datetime="2021-05-10T16:09:14+00:00">2021-05-10</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
