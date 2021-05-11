@@ -701,10 +701,10 @@ leancloud_visitors:
 # Visit https://console.firebase.google.com/u/0/ to get apiKey and projectId.
 # Visit https://firebase.google.com/docs/firestore/ to get more information about firestore.
 firestore:
-  enable: false
-  collection: articles # Required, a string collection name to access firestore database
-  apiKey: # Required
-  projectId: # Required
+  enable: true
+  collection: blog # Required, a string collection name to access firestore database
+  apiKey: AIzaSyCEEDhgvIW6daG1j-bCMraFFCAtYUhppb4 # Required
+  projectId: blog-7ff9c # Required
 
 # Show Views / Visitors of the website / page with busuanzi.
 # For more information: http://ibruce.info/2015/04/04/busuanzi/
