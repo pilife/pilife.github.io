@@ -244,10 +244,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-05-10 16:48:46 / 修改时间：16:09:14" itemprop="dateCreated datePublished" datetime="2021-05-10T16:48:46+00:00">2021-05-10</time>
+      <time title="创建时间：2021-05-10 16:48:46" itemprop="dateCreated datePublished" datetime="2021-05-10T16:48:46+00:00">2021-05-10</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-05-11 05:14:20" itemprop="dateModified" datetime="2021-05-11T05:14:20+00:00">2021-05-11</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -284,25 +290,20 @@
     <div class="post-body" itemprop="articleBody">
           基础知识
 泊松分布：描述单位时间内随机事件发生的次数的概率分布
-$$
-P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}
-$$
 
-问题建模
-问题定义
+P(X=k)=e−λλkk!P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}P(X=k)=k!e−λλk​
+
+ 问题建模
+ 问题定义
 简略描述：分布式存储系统年失效率
 
 详细描述：以硬盘为存储数据的基本物理单位，一年时间内，硬盘故障导致数据丢失的概率
 
-问题拆解
- 1. 单个硬盘单位时间故障概率 $\lambda$
- 2. K个硬盘一段时间T内故障概率 $P_a(T,K)$
- 3. 损坏的K个硬盘恰好造成数据丢失的概率 $P_b(K)$
- 4. T时间内，硬盘故障导致数据丢失的概率 $P_c(T)$
-
-问题求解
-$\lambda$
- $\lambda
+ 问题拆解
+ 1. 单个硬盘单位时间故障概率 λ\lambdaλ
+ 2. K个硬盘一段时间T内故障概率 Pa(T,K)P_a(T,K)Pa​(T,K)
+ 3. 损坏的K个硬盘恰好造成数据丢失的概率 Pb(K)P_b(K)Pb​(K)
+ 4. T时间内
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/#more" rel="contents">
@@ -367,7 +368,7 @@ $\lambda$
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-05-10 16:09:14" itemprop="dateModified" datetime="2021-05-10T16:09:14+00:00">2021-05-10</time>
+        <time title="修改时间：2021-05-11 05:14:20" itemprop="dateModified" datetime="2021-05-11T05:14:20+00:00">2021-05-11</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -405,7 +406,7 @@ $\lambda$
     <div class="post-body" itemprop="articleBody">
           在实际编程中，超时判断作为无处不在，但是其内在的原理，所用的时钟你真的了解吗？本文将带你了解常用的时钟及相关调用，让你在面对时间跳变时心中有底！
 
-时钟分类
+ 时钟分类
 首先需要了解时钟有哪几种，通过阅读time.h文件，可以发现共定义了12种时钟
 
 1
@@ -436,7 +437,7 @@ $\lambda$
 #  ifdef __USE_POSIX199309
 /* Identifier for system-wide realtime clock.  */
 #   define CLOCK_REALTIME		0
-/* Monotonic
+/* Monotoni
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/04/28/%E4%BD%A0%E7%9C%9F%E7%9A%84%E7%9F%A5%E9%81%93%E6%97%B6%E9%92%9F%E5%90%97%EF%BC%9F/#more" rel="contents">
@@ -521,6 +522,11 @@ $\lambda$
   
 
 
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.3/dist/katex.min.css">
 
 
 <script class="next-config" data-name="disqus" type="application/json">{&quot;enable&quot;:true,&quot;shortname&quot;:&quot;yizhang&quot;,&quot;count&quot;:true,&quot;i18n&quot;:{&quot;disqus&quot;:&quot;disqus&quot;}}</script>
