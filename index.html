@@ -252,7 +252,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-05-11 05:56:09" itemprop="dateModified" datetime="2021-05-11T05:56:09+00:00">2021-05-11</time>
+        <time title="修改时间：2021-05-12 10:30:39" itemprop="dateModified" datetime="2021-05-12T10:30:39+00:00">2021-05-12</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -295,7 +295,20 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          基础知识
+          符号表
+本文所有用到以下符号处语义均相同
+
+KKK：故障磁盘数量
+
+NNN：集群磁盘总数量
+
+RRR：副本数
+
+SSS：副本大小
+
+MMM：集群总数据量
+
+ 基础知识
 泊松分布：描述单位时间内随机事件发生的次数的概率分布
 
 P(X=k)=e−λλkk!P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}P(X=k)=k!e−λλk​
@@ -307,10 +320,8 @@ P(X=k)=e−λλkk!P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}P(X=k)=k!e−λλk​
 详细描述：以硬盘为存储数据的基本物理单位，一年时间内，硬盘故障导致数据丢失的概率
 
  问题拆解
- 1. 单个硬盘单位时间故障概率 λ\lambdaλ
- 2. K个硬盘一段时间T内故障概率 Pa(T,K)P_a(T,K)Pa​(T,K)
- 3. 损坏的K个硬盘恰好造成数据丢失的概率 Pb(K)P_b(K)Pb​(K)
- 4. T时间内
+ 1. 单个硬盘单位时间ttt故障概率 λ\lambdaλ
+ 2. KKK个硬盘
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/05/10/%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7/#more" rel="contents">
@@ -375,7 +386,7 @@ P(X=k)=e−λλkk!P(X=k)=\frac{e^{-\lambda}\lambda^k}{k!}P(X=k)=k!e−λλk​
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-05-11 05:56:09" itemprop="dateModified" datetime="2021-05-11T05:56:09+00:00">2021-05-11</time>
+        <time title="修改时间：2021-05-12 10:30:39" itemprop="dateModified" datetime="2021-05-12T10:30:39+00:00">2021-05-12</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
