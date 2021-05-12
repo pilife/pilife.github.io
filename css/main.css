@@ -2819,7 +2819,7 @@ mark.search-keyword {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #6c9df9;
+  background: #3c1846;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
